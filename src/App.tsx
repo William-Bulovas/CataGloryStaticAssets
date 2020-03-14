@@ -1,24 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { Hub, Auth, API } from 'aws-amplify';
+import NavBar from './components/NavBar';
+import { Switch, Route } from 'react-router-dom';
+import FacebookPolicyPage from './components/FacebookPolicyPage';
+import CreateGame from './clients/CreateGame';
+import { CreateGameResponse } from './clients/CreateGame';
 
 function App() {
+  const [logInStatus, setLogInStatus] = useState(false);
+
+  useEffect(() => {
+    Hub.listen('auth', ({ payload: {event, data}}) => {
+      switch (event) {
+        case "signIn":
+          setLogInStatus(true);
+          break;
+        case "signOut":
+          setLogInStatus(false);
+      }
+    }); 
+
+    Auth.currentSession().then(
+      () => {
+        setLogInStatus(true);
+      }
+    ).catch(
+      (err) => { 
+        console.log("coudl not fetch creds");
+        console.log(err)
+        }
+    );  
+  });
+
+  const theThing = () => {
+    CreateGame("game123", 1);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavBar loginState={logInStatus} />
+      <Switch>
+        <Route path="/privacy" >
+          <FacebookPolicyPage loginState={logInStatus} />
+        </Route>
+        <Route path="/">
+          <button onClick={theThing} >Do the thing</button>
+        </Route>
+      </Switch>
     </div>
   );
 }
