@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Hub, Auth, API } from 'aws-amplify';
-import NavBar from './components/NavBar';
+import { Hub, Auth } from 'aws-amplify';
 import { Switch, Route } from 'react-router-dom';
 import FacebookPolicyPage from './components/FacebookPolicyPage';
-import CreateGame from './clients/CreateGame';
-import { CreateGameResponse } from './clients/CreateGame';
+import NavBar from './components/nav/NavBar';
+import JoinGameComponent from './components/joinGame/JoinGameComponent';
 
 function App() {
   const [logInStatus, setLogInStatus] = useState(false);
@@ -21,21 +20,10 @@ function App() {
       }
     }); 
 
-    Auth.currentSession().then(
-      () => {
-        setLogInStatus(true);
-      }
-    ).catch(
-      (err) => { 
-        console.log("coudl not fetch creds");
-        console.log(err)
-        }
-    );  
+    Auth.currentSession()
+      .then(() => setLogInStatus(true))
+      .catch(() => setLogInStatus(false));  
   });
-
-  const theThing = () => {
-    CreateGame("game123", 1);
-  };
 
   return (
     <div className="App">
@@ -44,8 +32,11 @@ function App() {
         <Route path="/privacy" >
           <FacebookPolicyPage loginState={logInStatus} />
         </Route>
+        <Route path="/join">
+          <JoinGameComponent/>
+        </Route>
         <Route path="/">
-          <button onClick={theThing} >Do the thing</button>
+          <div/>
         </Route>
       </Switch>
     </div>

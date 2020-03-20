@@ -1,6 +1,7 @@
 import React from 'react';
 import FacebookSignInButton from './FacebookSignInButton';
 import { Link } from 'react-router-dom';
+import CreateGameButton from './CreateGameButton';
 
 interface Props {
     loginState: boolean
@@ -17,6 +18,7 @@ export default function NavBar(props: Props) {
                 </Link>
 
                 { !props.loginState && <FacebookSignInButton/> }
+                { props.loginState && <CreateGameButton/> }
             </div>
         </nav>
     );
