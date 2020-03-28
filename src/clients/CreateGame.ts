@@ -11,6 +11,7 @@ export default function CreateGame() {
         BasicBackendCall.call('POST', 'GAME', JSON.stringify({
             userId: session.getIdToken().payload["cognito:username"]
     })))
-    .then(response => response.json())
+    .then(response => response.text())
+    .then(text => JSON.parse(text))
     .then(json => json as unknown as CreateGameResponse)
 }

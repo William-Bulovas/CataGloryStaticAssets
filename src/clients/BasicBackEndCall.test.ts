@@ -30,7 +30,6 @@ describe('BasicBackEndCall', () => {
             method: requestType,
             mode: 'cors',
             headers: {
-              'Access-Control-Allow-Origin': "'*'",
               'Content-Type': 'application/json',
               'Authorization': ID_TOKEN
             },

@@ -18,7 +18,7 @@ export default function CreateGameButton() {
             .then(response => setGameId(response.gameId))
             .then(() => setShowDialog(true))
             .then(() => setLoading(false))
-            .catch(err => console.log("Could not create the game"));
+            .catch(err => console.log("Could not create the game :" + err));
     }
 
     const createLink = () =>{

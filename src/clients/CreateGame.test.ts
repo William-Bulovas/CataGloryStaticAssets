@@ -17,7 +17,7 @@ describe('CreateGame', () => {
             gameId: sampleGameId
         })));
     
-        basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody: string) => mockFetchPromise);
+        basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody?: string) => mockFetchPromise);
     })
 
     it('calls basic backend call with the correct params', async () => {

@@ -14,13 +14,17 @@ export default function () {
     const location = useLocation();
 
     useEffect(() => {
+        if (gameData) return;
         Auth.currentSession()
             .catch(() => history.push("/"))
             .then(() => getGameFromURL())
-            .then((gameId) => GetGame(gameId))
-            .then((response) => setGameData(response))
-            .then(() => setLoading(false))
-            .catch(err => console.log("Could not get game"));    
+            .then(gameId => GetGame(gameId))
+            .then(response => {
+                console.log(JSON.stringify(response.players[0].score));
+                setGameData(response)
+            })
+            .catch(err => console.log("Could not get game " + err))
+            .then(() => setLoading(false));
     });
 
     const getGameFromURL = () => {
@@ -30,12 +34,11 @@ export default function () {
         if (s == null) {
             history.push('/');
         }
-
         return s!;
     }
 
     const joinGame = () => {
-        JoinGame("gameId")
+        JoinGame(getGameFromURL())
             .then(() => setDone(true))
             .catch(err => console.log("Could not join game"))
     }
@@ -46,14 +49,14 @@ export default function () {
 
     return (
         <div>
-            Do you want to join this game?
-
-            <div>
-                { gameData?.host + "'s  Game!" }
-            </div>
+            { "Do you want to join " + gameData?.hostUserId + "'s  Game?" }
 
             <ul className="lsit-group">
-                { gameData?.players.map((player) => <li className="list-group-item">{player}</li>) }
+                { gameData?.players.map((player) => 
+                    <li className="list-group-item" key={player.userId}>
+                        {player.userId}
+                    </li>
+                ) }
             </ul>
 
 

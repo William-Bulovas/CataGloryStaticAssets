@@ -14,17 +14,13 @@ describe('CreateGame', () => {
             players: players
         })));
     
-        basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody: string) => mockFetchPromise);
+        basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody?: string) => mockFetchPromise);
     })
 
     it('calls basic backend call with the correct params', async () => {
         await GetGame(sampleGameId);
        
-        expect(basicBackendCallSpy).toHaveBeenCalledWith('GET', 'GAME', JSON.stringify({
-            gameId: sampleGameId,
-            host: host,
-            players: players
-        }));
+        expect(basicBackendCallSpy).toHaveBeenCalledWith('GET', 'GAME/' + sampleGameId);
     });
 
     it('returns the correct return val', async() => {

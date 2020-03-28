@@ -1,17 +1,23 @@
 import BasicBackendCall from './BasicBackEndCall';
 
+export interface Player {
+    userId: string,
+    score: number
+}
+
 export interface GetGameResponse {
     gameId: string,
-    host: string,
-    players: string[]
+    hostUserId: string,
+    players: Player[],
+    score: number
 }
 
 export default function GetGame(gameId: string): Promise<GetGameResponse> {
-    const getGameBody = JSON.stringify({
-        gameId: gameId
-    });
-
-    return BasicBackendCall.call("GET", "GAME", getGameBody)
+    return BasicBackendCall.call("GET", "GAME/" + gameId)
         .then(response => response.json())
+        .then(json => {
+            console.log(JSON.stringify(json));
+            return json;
+        })
         .then(json => json as unknown as GetGameResponse);
 }
