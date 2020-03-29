@@ -5,8 +5,7 @@ import BasicBackendCall from './BasicBackEndCall';
 
 describe('CreateGame', () => {
     const sampleGameId = "sampleGameId";
-
-
+    
     const currentSessionSpy = jest.spyOn(Auth, 'currentSession');
     const basicBackendCallSpy = jest.spyOn(BasicBackendCall, 'call');
 

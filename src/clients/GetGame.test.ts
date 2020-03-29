@@ -1,7 +1,7 @@
 import BasicBackendCall from './BasicBackEndCall';
 import GetGame from './GetGame';
 
-describe('CreateGame', () => {
+describe('GetGame', () => {
     const sampleGameId = "sampleGameId";
     const host = "rbbasin";
     const players = [ "William", "Ronnie", "Nancy" ];
