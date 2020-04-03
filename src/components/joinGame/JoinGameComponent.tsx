@@ -5,11 +5,13 @@ import Loading from '../Loading';
 import { Link } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import { useHistory, useLocation } from 'react-router-dom';
+import NicknameForm from '../NicknameForm';
+import { Modal } from 'react-bootstrap';
 
 export default function () {
     const [gameData, setGameData] = useState<GetGameResponse>();
     const [loading, setLoading] = useState(true);
-    const [done, setDone] = useState(false);
+    const [gameJoined, setGameJoined] = useState(false);
     const history = useHistory();
     const location = useLocation();
 
@@ -19,10 +21,7 @@ export default function () {
             .catch(() => history.push("/"))
             .then(() => getGameFromURL())
             .then(gameId => GetGame(gameId))
-            .then(response => {
-                console.log(JSON.stringify(response.players[0].score));
-                setGameData(response)
-            })
+            .then(response => setGameData(response))
             .catch(err => console.log("Could not get game " + err))
             .then(() => setLoading(false));
     });
@@ -37,9 +36,11 @@ export default function () {
         return s!;
     }
 
-    const joinGame = () => {
-        JoinGame(getGameFromURL())
-            .then(() => setDone(true))
+    const joinGame = (nickname: string) => {
+        Promise.resolve(setLoading(true))
+            .then(() => JoinGame(getGameFromURL(), nickname))
+            .then(() => setGameJoined(true))
+            .then(() => setLoading(false))
             .catch(err => console.log("Could not join game"))
     }
 
@@ -47,36 +48,35 @@ export default function () {
         return (<Loading/>);
     };
 
-    return (
-        <div>
-            { "Do you want to join " + gameData?.hostUserId + "'s  Game?" }
+    const hide = () => {
+        history.push("/");
+    }
 
-            <ul className="lsit-group">
+    return (
+        <div className="container">
+            <h3>{ "Do you want to join " + gameData?.host.nickname + "'s  Game?" }</h3>
+
+            <h5 className="pt-4">Current Players:</h5> 
+            <ul className="lsit-group pt-4">
                 { gameData?.players.map((player) => 
-                    <li className="list-group-item" key={player.userId}>
-                        {player.userId}
+                    <li className="list-group-item" key={player.nickname}>
+                        {player.nickname}
                     </li>
                 ) }
             </ul>
 
-
-            <button className="btn btn-primary" onClick={joinGame}>
-                Join Game!
-            </button>
-
-            <div className="modal fade" id="createGameModal" role="dialog" hidden={!done}>
-                <div className="modal-dialog" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Game Successfully Created!</h5>
-                            <Link className="close" to="/"/>
-                        </div>
-                        <div className="modal-body">
-                            You have successfully joined the Game! Wait until the host starts the game!
-                        </div>
-                    </div>
-                </div>
+            <div className="my-3">
+                <NicknameForm createGameFunction={joinGame} buttonText="Join!"/>
             </div>
+
+            <Modal show={gameJoined} onHide={hide}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Game Successfully Joined!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    You have successfully joined the Game! Wait until the host starts the game!
+                </Modal.Body>
+            </Modal>
         </div>    
     );
 }
