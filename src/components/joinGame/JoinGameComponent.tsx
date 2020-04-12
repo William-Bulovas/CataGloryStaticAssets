@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import GetGame, { GetGameResponse } from '../../clients/GetGame';
 import JoinGame from '../../clients/JoinGame';
 import Loading from '../Loading';
-import { Link } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import { useHistory, useLocation } from 'react-router-dom';
 import NicknameForm from '../NicknameForm';
@@ -62,7 +61,7 @@ export default function () {
                     <li className="list-group-item" key={player.nickname}>
                         {player.nickname}
                     </li>
-                ) }
+                )}
             </ul>
 
             <div className="my-3">

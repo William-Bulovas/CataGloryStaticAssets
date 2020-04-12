@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { Hub, Auth } from 'aws-amplify';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useParams, useHistory } from 'react-router-dom';
 import FacebookPolicyPage from './components/FacebookPolicyPage';
 import NavBar from './components/nav/NavBar';
 import JoinGameComponent from './components/joinGame/JoinGameComponent';
+import PlayGamePage from './components/playGame/PlayGamePage';
 
 function App() {
   const [logInStatus, setLogInStatus] = useState(false);
@@ -35,12 +36,28 @@ function App() {
         <Route path="/join">
           <JoinGameComponent/>
         </Route>
+        <Route path="/play/:gameId/:round">
+          <PlayGameWrapper/>
+        </Route>
         <Route path="/">
           <div/>
         </Route>
       </Switch>
     </div>
   );
-}
+};
+
+function PlayGameWrapper() {
+  const history = useHistory();
+
+  const {gameId, round} = useParams();
+
+  if (gameId == null || round == null) {
+    history.push('/');
+    return (<div/>);
+  }
+
+  return <PlayGamePage gameId={gameId} round={round as unknown as number}/>
+};
 
 export default App;

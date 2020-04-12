@@ -1,16 +1,38 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import ReactDOM from 'react-dom';
 import { Auth } from 'aws-amplify';
 import FacebookSignInButton from './FacebookSignInButton';
+import { act } from 'react-dom/test-utils';
 
-describe('<FacebookSignInButton />', () => {
-    const wrapper = shallow(<FacebookSignInButton/>);
+describe('<FacebookSignInButton/>', () => {
+    const currentSessionSpy = jest.spyOn(Auth, 'federatedSignIn');
 
-    jest.mock('aws-amplify');
+    let container: Element;
 
-    it('renders a button that will sign on click', () =>{
-        wrapper.find('button').simulate('click');
+    beforeEach(() => {
+        currentSessionSpy.mockImplementation();
 
-        expect(Auth.federatedSignIn).toBeCalledTimes(1);
+        container = document.createElement('div');
+        document.body.appendChild(container);
+        
+        act(() => {
+            ReactDOM.render(<FacebookSignInButton/>, container)
+        });
+    });
+
+    afterEach(() => {
+        currentSessionSpy.mockClear();
+
+        document.body.removeChild(container);
+    });
+
+    it('will call get federated sign on when the button is pressed', () => {
+        const button = container.querySelector('button');
+
+        act(() => {
+            button?.dispatchEvent(new MouseEvent('click', undefined));
+        });
+
+        expect(currentSessionSpy).toHaveBeenCalledTimes(1);
     });
 });
