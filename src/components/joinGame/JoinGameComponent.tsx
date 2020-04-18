@@ -3,7 +3,7 @@ import GetGame, { GetGameResponse } from '../../clients/GetGame';
 import JoinGame from '../../clients/JoinGame';
 import Loading from '../Loading';
 import { Auth } from 'aws-amplify';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, Redirect } from 'react-router-dom';
 import NicknameForm from '../NicknameForm';
 import { Modal } from 'react-bootstrap';
 
@@ -11,12 +11,14 @@ export default function () {
     const [gameData, setGameData] = useState<GetGameResponse>();
     const [loading, setLoading] = useState(true);
     const [gameJoined, setGameJoined] = useState(false);
+    const [userId, setUserId] = useState("");
     const history = useHistory();
     const location = useLocation();
 
     useEffect(() => {
         if (gameData) return;
         Auth.currentSession()
+            .then(session => setUserId(session.getIdToken().payload["cognito:username"]))
             .catch(() => history.push("/"))
             .then(() => getGameFromURL())
             .then(gameId => GetGame(gameId))
@@ -46,6 +48,13 @@ export default function () {
     if (loading) {
         return (<Loading/>);
     };
+
+    // If user is the host, redirect to the homepage since they shouldn't be able to join
+    if (gameData?.host.userId == userId){
+        return (
+            <Redirect to="/" />
+      ) 
+    }
 
     const hide = () => {
         history.push("/");

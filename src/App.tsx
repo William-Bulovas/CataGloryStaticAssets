@@ -4,11 +4,16 @@ import { Hub, Auth } from 'aws-amplify';
 import { Switch, Route, useParams, useHistory } from 'react-router-dom';
 import FacebookPolicyPage from './components/FacebookPolicyPage';
 import NavBar from './components/nav/NavBar';
+import GetGamesForUser from './clients/GetGamesForUser';
+import { GetGamesResponse, BasicGameInfo } from './clients/GetGamesForUser';
 import JoinGameComponent from './components/joinGame/JoinGameComponent';
 import PlayGamePage from './components/playGame/PlayGamePage';
+import GamesOverviewForUser from './components/GamesOverviewForUser';
+
 
 function App() {
   const [logInStatus, setLogInStatus] = useState(false);
+  const [isLoading, setLoading] = useState(false)
 
   useEffect(() => {
     Hub.listen('auth', ({ payload: {event, data}}) => {
@@ -23,7 +28,8 @@ function App() {
 
     Auth.currentSession()
       .then(() => setLogInStatus(true))
-      .catch(() => setLogInStatus(false));  
+      .catch(() => setLogInStatus(false));
+    
   });
 
   return (
@@ -33,6 +39,9 @@ function App() {
         <Route path="/privacy" >
           <FacebookPolicyPage loginState={logInStatus} />
         </Route>
+        <Route path="/home" >
+          <GamesOverviewForUser/>
+        </Route>
         <Route path="/join">
           <JoinGameComponent/>
         </Route>
@@ -40,7 +49,7 @@ function App() {
           <PlayGameWrapper/>
         </Route>
         <Route path="/">
-          <div/>
+          <GamesOverviewForUser/>
         </Route>
       </Switch>
     </div>

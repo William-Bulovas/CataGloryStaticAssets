@@ -24,7 +24,7 @@ export default function CreateGameButton() {
     }
 
     const createLink = () =>{
-        return "https://d30igcs3iq7430.cloudfront.net/join?gameId=" + createdGameId;
+        return "https://d2pynpzc4gpify.cloudfront.net/join?gameId=" + createdGameId;
     };
 
     const dialogTitle = gameCreated ? "Game Successfully Created!"
