@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FormEvent } from 'react';
 import { GetQuestions, GetQuestionsResponse } from '../../clients/GetQuestions';
+import { SubmitAnswer } from '../../clients/SubmitAnswer';
 import Loading from '../Loading';
+import CheckIcon from '@material-ui/icons/Check';
+import SubmissionPage from './SubmissionPage';
 
 interface Props {
     gameId: string,
@@ -10,10 +13,10 @@ interface Props {
 export default (props: Props) => {
     const [ questions, setQuestions ] = useState<GetQuestionsResponse>();
     const [ currentQuestion, setCurrent ] = useState(0);
-    const [ answer, setAnswer ] = useState("");
+    const [ loadingSet, setLoadingSet ] = useState([] as number[]);
+    const [ doneSet, setDoneSet ] = useState([] as number[]);
 
     useEffect(() => {
-        console.log("here baby");
         if (questions != null) return;
 
         GetQuestions(props.gameId, props.round)
@@ -25,22 +28,43 @@ export default (props: Props) => {
     });
 
     if (questions == null) {
-        console.log("null");
         return <Loading/>;
     }
-    console.log("not null");
 
     const questionClassForNumber = (questionNumber: number) => {
         if (questionNumber == currentQuestion) {
-            return "list-group-item active";
+            return "list-group-item active text-left";
         }
-        return "list-group-item";
+        return "list-group-item text-left";
     };
 
     const clickQuestion = (questionNumber: number) => {
-        setAnswer("");
         setCurrent(questionNumber);
     };
+
+    const submitAnswer = (answer: string) => {
+        const questionSubmitting = currentQuestion;
+
+        setLoadingSet(loadingSet.concat(questionSubmitting));
+        if (questionSubmitting < questions.categories.length - 1) {
+            setCurrent(currentQuestion + 1);
+        }
+        SubmitAnswer(props.gameId, props.round, answer, currentQuestion)
+            .then(() => setDoneSet(doneSet.concat(questionSubmitting)));
+    };
+
+    const getQuestionStatus = (questionNumber: number) => {
+        if (doneSet.includes(questionNumber)) {
+            return <CheckIcon className="ml-2" fontSize="small"/>;
+        }
+        if (loadingSet.includes(questionNumber)) {
+            return (
+                <div className="spinner-border spinner-border-sm mx-2"  role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            );
+        }
+    }
 
     const selectedCategory = questions.categories.filter(category => category.QuestionNumber == currentQuestion)[0];
 
@@ -53,27 +77,17 @@ export default (props: Props) => {
                     <ul className="list-group">
                         { questions.categories.map(question => {
                             return (
-                                <li className={questionClassForNumber(question.QuestionNumber)} onClick={() => clickQuestion(question.QuestionNumber)} key={question.QuestionNumber}>
-                                    Question {question.QuestionNumber + 1}
+                                <li className={ questionClassForNumber(question.QuestionNumber) } onClick={() => clickQuestion(question.QuestionNumber)} key={ question.QuestionNumber }>
+                                    Question { question.QuestionNumber + 1 }
+
+                                    { getQuestionStatus(question.QuestionNumber) }
                                 </li>
                             );
                         })}
                     </ul>
                 </div>
-                <div className="col-sm-10">
-                    <div className="row">
-                        <label htmlFor="inputEmail3" className="col-sm-4">Name a {selectedCategory.Category}!</label>
-                        <div className="col-sm-8">
-                            <input type="text" className="form-control" placeholder={"Must start with " + questions.letter + "!"} 
-                                value={answer} onChange={event => setAnswer(event.target.value)}/>
-                        </div>
-                    </div>
-                    <div className="row pt-3">
-                        <div className="col-sm">
-                            <button className="btn btn-primary mb-2">Submit Answer</button>
-                        </div>
-                    </div>
-                </div>
+
+                <SubmissionPage letter={ questions.letter } category={ selectedCategory.Category } submissionFunction={ submitAnswer }/>
             </div>
         </div>
     );

@@ -14,7 +14,6 @@ export default function () {
     const [allGamesForUser, setAllGamesForUser] = useState<GetGamesResponse>()
 
     const getGamesForUser = () => {
-        console.log('Yeehaw');
         Promise.resolve(setLoading(true))
             .then(() => GetGamesForUser())
             .then(response => setAllGamesForUser(response))

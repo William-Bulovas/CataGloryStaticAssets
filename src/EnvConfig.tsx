@@ -1,7 +1,7 @@
 export class APIConfig {
     user: string = '';
     constructor(){
-        this.user = "Ronnie"
+        this.user = "Will"
     }
     public getApiEndpoint(): string {
         return APIConfig.getMapOfConfigValues()['apiEndpoint'][this.user];
