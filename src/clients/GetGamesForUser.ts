@@ -13,7 +13,6 @@ export interface GetGamesResponse {
 export default function GetGames(state?: string): Promise<GetGamesResponse> {
     return Auth.currentSession()
     .then(session => {
-        console.log("erherererer");
         const userId = session.getIdToken().payload["cognito:username"];
         
         const resourcePath = 'GAMES/' + userId + (state ? '/' + state : '');

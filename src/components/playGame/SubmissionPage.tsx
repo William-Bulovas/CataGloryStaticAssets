@@ -4,7 +4,7 @@ interface Props {
     letter: string,
     category: string,
     submissionFunction: (answer: string) => void
-}
+};
 
 export default (props: Props) => {
     const [ answer, setAnswer ] = useState("");

@@ -14,17 +14,17 @@ export default function AmplifySetup() {
         mandatorySignIn: false,
 
         cookieStorage: {
-            domain: "https://"+ apiConfig.getCloudfrontDomain() +"/", 
+            domain: "localhost", 
             secure: false
         },
 
         oauth: {
             domain: apiConfig.getOathDomain(),
             scope: ["openid"],
-            redirectSignIn: "https://"+ apiConfig.getCloudfrontDomain() +"/",
-            redirectSignOut: "https://"+ apiConfig.getCloudfrontDomain() +"/",
-            // redirectSignIn: "http://localhost:3000/",
-            // redirectSignOut: "http://localhost:3000/",
+            // redirectSignIn: "https://"+ apiConfig.getCloudfrontDomain() +"/",
+            // redirectSignOut: "https://"+ apiConfig.getCloudfrontDomain() +"/",
+            redirectSignIn: "http://localhost:3000/",
+            redirectSignOut: "http://localhost:3000/",
             responseType: "code"
         }
     });
