@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { mount } from 'enzyme';
 import PlayGamePage from './PlayGamePage';
 import * as Questions from '../../clients/GetQuestions';
-import { act } from 'react-dom/test-utils';
+import { render, RenderResult } from '@testing-library/react';
+import SubmissionPage from './SubmissionPage';
 
 describe('<PlayGamePage/>', () => {
     const sampleGameId = 'gameId';
@@ -22,7 +21,7 @@ describe('<PlayGamePage/>', () => {
 
     const getQuestionsSpy = jest.spyOn(Questions, 'GetQuestions');
 
-    let container: Element;
+    let playGamePage: RenderResult;
 
     beforeEach(() => {
         getQuestionsSpy.mockImplementation((gameId: string, round: number) => 
@@ -34,18 +33,11 @@ describe('<PlayGamePage/>', () => {
             })
         );
 
-        container = document.createElement('div');
-        document.body.appendChild(container);
-        
-        act(() => {
-            ReactDOM.render(<PlayGamePage gameId={sampleGameId} round={sampleRound}/>, container)
-        });
+        playGamePage = render(<PlayGamePage gameId={sampleGameId} round={sampleRound}/>);
     });
 
     afterEach(() => {
         getQuestionsSpy.mockClear();
-
-        document.body.removeChild(container);
     });
 
     it('will call get questions on mount', () => {
