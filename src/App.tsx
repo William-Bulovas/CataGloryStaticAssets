@@ -8,7 +8,8 @@ import GetGamesForUser from './clients/GetGamesForUser';
 import { GetGamesResponse, BasicGameInfo } from './clients/GetGamesForUser';
 import JoinGameComponent from './components/joinGame/JoinGameComponent';
 import PlayGamePage from './components/playGame/PlayGamePage';
-import GamesOverviewForUser from './components/GamesOverviewForUser';
+import GamesOverviewForUser from './components/homepage/GamesOverviewForUser';
+import ViewRoundResults from './components/homepage/ViewRoundResults';
 
 
 function App() {

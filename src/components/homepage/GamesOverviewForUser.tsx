@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Hub, Auth } from 'aws-amplify';
 import { Switch, Route } from 'react-router-dom';
-import FacebookPolicyPage from './../components/FacebookPolicyPage';
-import NavBar from './../components/nav/NavBar';
-import GetGamesForUser from './../clients/GetGamesForUser';
-import { GetGamesResponse, BasicGameInfo } from './../clients/GetGamesForUser';
+import FacebookPolicyPage from '../FacebookPolicyPage';
+import NavBar from '../nav/NavBar';
+import GetGamesForUser from '../../clients/GetGamesForUser';
+import { GetGamesResponse, BasicGameInfo } from '../../clients/GetGamesForUser';
 
 import GameInfoForUser from './GameInfoForUser';
 
@@ -25,7 +25,6 @@ export default function () {
         let game_list: any = []
         if (allGamesForUser) {
             allGamesForUser.games.forEach(game => {
-                console.log('Jumping through here now with game id' + game.gameId);
                 game_list.push(<GameInfoForUser gameId={game.gameId}/>);
             });
         }
@@ -34,15 +33,10 @@ export default function () {
 
     useEffect(() => {
         Auth.currentSession()
-            .catch(err => console.log("Could not get game " + err))
-            // .then(() => setLoading(false));
+            .catch(err => console.log("Could not get game " + err));
         
         if (!allGamesForUser) getGamesForUser();
     });
-
-    // if (loading) {
-    //     return (<Loading/>);
-    // };
 
     return (
         <div className=".container-lg">
