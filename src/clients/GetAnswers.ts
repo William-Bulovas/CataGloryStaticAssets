@@ -14,7 +14,7 @@ export default function GetAnswers(gameId: string, round: number): Promise<GetAn
     return BasicBackendCall.call("GET", "ANSWERS/" + gameId + "/" + round) 
         .then(response => response.json())
         .then(json => {
-            console.log(JSON.stringify(json));
+            // console.log(JSON.stringify(json));
             return json;
         })
         .then(json => json as unknown as GetAnswersResponse);

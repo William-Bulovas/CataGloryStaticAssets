@@ -17,7 +17,7 @@ export default function NavBar(props: Props) {
                     Privacy Policy
                 </Link>
 
-                { !props.loginState && <FacebookSignInButton/> }
+                { !props.loginState && <FacebookSignInButton largeBtn={false}/> }
                 { props.loginState && <CreateGameButton/> }
             </div>
         </nav>

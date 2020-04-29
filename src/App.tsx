@@ -10,6 +10,7 @@ import JoinGameComponent from './components/joinGame/JoinGameComponent';
 import PlayGamePage from './components/playGame/PlayGamePage';
 import GamesOverviewForUser from './components/homepage/GamesOverviewForUser';
 import ViewRoundResults from './components/homepage/ViewRoundResults';
+import WelcomePage from './components/homepage/WelcomePage';
 
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
   });
 
   return (
-    <div className="App">
+    <div className="App mb-5">
       <NavBar loginState={logInStatus} />
       <Switch>
         <Route path="/privacy" >
@@ -50,7 +51,9 @@ function App() {
           <PlayGameWrapper/>
         </Route>
         <Route path="/">
-          <GamesOverviewForUser/>
+          {logInStatus ? <GamesOverviewForUser /> :
+          <WelcomePage />
+          }
         </Route>
       </Switch>
     </div>

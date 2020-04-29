@@ -40,7 +40,6 @@ export default function () {
 
     return (
         <div className=".container-lg">
-            <h2 className="mb-5"> Welcome Home! </h2>
             <div className="row">
                 <div className="col order-1 align-self-center">
                     { games() }

@@ -22,7 +22,7 @@ export default function GetGame(gameId: string): Promise<GetGameResponse> {
     return BasicBackendCall.call("GET", "GAME/" + gameId)
         .then(response => response.json())
         .then(json => {
-            console.log(JSON.stringify(json));
+            // console.log(JSON.stringify(json));
             return json;
         })
         .then(json => json as unknown as GetGameResponse);

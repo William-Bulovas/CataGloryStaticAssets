@@ -2,7 +2,11 @@ import React from 'react';
 import { Auth } from 'aws-amplify';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth/lib-esm/types';
 
-export default function FacebookSignInButton() {
+interface Props {
+  largeBtn: boolean
+};
+
+export default function FacebookSignInButton(props: Props) {
     const signIn = async () => {
         Auth.federatedSignIn({
           provider: CognitoHostedUIIdentityProvider.Facebook
@@ -11,9 +15,11 @@ export default function FacebookSignInButton() {
 
     return (
       <div>
-        <button className="btn Facebook" onClick={signIn} >
+        {props.largeBtn ? <button className="btn Facebook btn-lg" onClick={signIn} >
           Continue with Facebook
-        </button>
+        </button> : <button className="btn Facebook" onClick={signIn} >
+          Continue with Facebook
+        </button>}
       </div>
     )    
 }

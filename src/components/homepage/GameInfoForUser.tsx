@@ -12,7 +12,6 @@ interface Props {
 
 export default (props: Props) => {
     const [ gameData, setGameData ] = useState<GetGameResponse>();
-    const [viewRoundResults, setViewRoundResults] = useState(false);
 
     useEffect(() => {
         if (gameData != null) return;
@@ -20,7 +19,7 @@ export default (props: Props) => {
         console.log('This is waht props looks like' + JSON.stringify(props));
         GetGame(props.gameId)
             .then(response => {
-                console.log(JSON.stringify(response));
+                // console.log(JSON.stringify(response));
                 setGameData(response)
             })
             .catch(err => console.log("Could not get game " + err));
@@ -39,10 +38,7 @@ export default (props: Props) => {
         return player_list;
     }
 
-    const toggleViewRoundResults = (flag: boolean) => {
-        setViewRoundResults(flag);
-    }
-
+    // todo: get the real round here
     const linkToPlayGame = "/play/" + gameData?.gameId + "/1";
 
     return (
@@ -64,9 +60,9 @@ export default (props: Props) => {
                         </Link>
                     </div>
                     <div className="row">
-                        <button className="btn btn-primary" onClick={() => toggleViewRoundResults(true)}>
-                            View Round Results
-                        </button>
+                        {
+                            gameData ? <ViewRoundResults gameId={gameData?.gameId} round={1} /> : null
+                        }
                     </div>
                 </div>
             </div>
@@ -83,9 +79,6 @@ export default (props: Props) => {
                     </tbody>
                 </table>
             </div>
-            { viewRoundResults ? 
-                <ViewRoundResults gameId={"3wwj7"} round={1} /> : null
-            }
         </div>
     );
 }
