@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap';
 import Loading from '../Loading';
 import CreateGameSuccessDialog from './CreateGameComponents/CreateGameSuccessDialog';
 import NicknameForm from '../NicknameForm';
+import { APIConfig } from '../../EnvConfig';
 
 export default function CreateGameButton() {
     const [showDialog, setShowDialog] = useState(false);
@@ -24,7 +25,8 @@ export default function CreateGameButton() {
     }
 
     const createLink = () =>{
-        return "https://d2pynpzc4gpify.cloudfront.net/join?gameId=" + createdGameId;
+        const apiConfig = new APIConfig();
+        return "https://" + apiConfig.getCloudfrontDomain() + "/join?gameId=" + createdGameId;
     };
 
     const dialogTitle = gameCreated ? "Game Successfully Created!"

@@ -7,44 +7,49 @@ import GetGamesForUser from '../../clients/GetGamesForUser';
 import { GetGamesResponse, BasicGameInfo } from '../../clients/GetGamesForUser';
 
 import GameInfoForUser from './GameInfoForUser';
+import Loading from '../Loading';
+import { GameStates } from '../../clients/GetGame';
 
 export default function () {
-    const [loading, setLoading] = useState(true);
-    const [gamesRetrievedForUser, setGamesRetrieved] = useState(false)
-    const [allGamesForUser, setAllGamesForUser] = useState<GetGamesResponse>()
+    const [pendingGames, setPendingGames] = useState<GetGamesResponse>()
+    const [waitingGames, setWaitingGames] = useState<GetGamesResponse>()
 
-    const getGamesForUser = () => {
-        Promise.resolve(setLoading(true))
-            .then(() => GetGamesForUser())
-            .then(response => setAllGamesForUser(response))
-            .then(() => setLoading(false))
-            .catch(err => console.log("Could not retreive games for user" + err))
-      }
+    const getPendingGames = () => {
+         GetGamesForUser(GameStates.Pending)
+            .then(response => setPendingGames(response))
+            .catch(err => {
+                console.log("Could not retreive games for user " + err)
+                console.log(err.stack)
+            })
+    };
+    const getWaitingGames = () => {
+        GetGamesForUser(GameStates.Waiting)
+           .then(response => setWaitingGames(response))
+           .catch(err => console.log("Could not retreive games for user " + err))
+    };
     
-    const games = () => {
-        let game_list: any = []
-        if (allGamesForUser) {
-            allGamesForUser.games.forEach(game => {
-                game_list.push(<GameInfoForUser gameId={game.gameId}/>);
-            });
-        }
-        return game_list;
-    }
-
     useEffect(() => {
         Auth.currentSession()
             .catch(err => console.log("Could not get game " + err));
         
-        if (!allGamesForUser) getGamesForUser();
+        if (!pendingGames) getPendingGames();
+        if (!waitingGames) getWaitingGames();
     });
 
-    return (
-        <div className=".container-lg">
-            <div className="row">
-                <div className="col order-1 align-self-center">
-                    { games() }
-                </div>
+    if (!pendingGames || !waitingGames) return <Loading/>;
+
+    if (pendingGames.games.length == 0 && waitingGames.games.length == 0) {
+        return (
+            <div>
+                <h3>No current active games!</h3>
             </div>
+        );
+    }
+
+    return (
+        <div className="container">
+            { pendingGames.games.map(game => <GameInfoForUser game={game}/>) }
+            { waitingGames.games.map(game => <GameInfoForUser game={game}/>) }
         </div>    
     );
 };

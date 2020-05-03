@@ -12,9 +12,9 @@ describe('CreateGame', () => {
     beforeEach(() => {
         setupAuthMock();
 
-        const mockFetchPromise = Promise.resolve(new Response(JSON.stringify({
+        const mockFetchPromise = Promise.resolve({
             gameId: sampleGameId
-        })));
+        });
     
         basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody?: string) => mockFetchPromise);
     })

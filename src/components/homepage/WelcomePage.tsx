@@ -19,7 +19,7 @@ const ColoredLine = (color: any) => (
 
 export default (props: Props) => {
     return (
-        <div className=".container mb-8">
+        <div className="container mb-8">
             <div className="row mb-8">
                 <div className="col">
                 </div>

@@ -8,6 +8,7 @@ describe('GetGames', () => {
     const gameId = "game1";
     const gameId2 = "game2";
     const state = "PENDING";
+    const round = 1;
 
     const currentSessionSpy = jest.spyOn(Auth, 'currentSession');
     const basicBackendCallSpy = jest.spyOn(BasicBackendCall, 'call');
@@ -16,11 +17,21 @@ describe('GetGames', () => {
         games: [
             {
                 userId: userId,
-                gameId: gameId
+                gameId: gameId,
+                state: state,
+                round: round,
+                scores: {
+                    scores: []
+                }
             },
             {
                 userId: userId,
-                gameId: gameId2
+                gameId: gameId2,
+                state: state,
+                round: round,
+                scores: {
+                    scores: []
+                }
             }
         ]
     };
@@ -28,7 +39,7 @@ describe('GetGames', () => {
     beforeEach(() => {
         setupAuthMock();
 
-        const mockFetchPromise = Promise.resolve(new Response(JSON.stringify(expectedResponse)));
+        const mockFetchPromise = Promise.resolve(expectedResponse);
 
         basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody?: string) => mockFetchPromise);
     });

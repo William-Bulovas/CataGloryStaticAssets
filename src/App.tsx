@@ -4,13 +4,10 @@ import { Hub, Auth } from 'aws-amplify';
 import { Switch, Route, useParams, useHistory } from 'react-router-dom';
 import FacebookPolicyPage from './components/FacebookPolicyPage';
 import NavBar from './components/nav/NavBar';
-import GetGamesForUser from './clients/GetGamesForUser';
-import { GetGamesResponse, BasicGameInfo } from './clients/GetGamesForUser';
 import JoinGameComponent from './components/joinGame/JoinGameComponent';
 import PlayGamePage from './components/playGame/PlayGamePage';
-import GamesOverviewForUser from './components/homepage/GamesOverviewForUser';
-import ViewRoundResults from './components/homepage/ViewRoundResults';
 import WelcomePage from './components/homepage/WelcomePage';
+import GamesOverviewForUser from './components/homepage/GamesOverviewForUser';
 
 
 function App() {
@@ -41,9 +38,6 @@ function App() {
         <Route path="/privacy" >
           <FacebookPolicyPage loginState={logInStatus} />
         </Route>
-        <Route path="/home" >
-          <GamesOverviewForUser/>
-        </Route>
         <Route path="/join">
           <JoinGameComponent/>
         </Route>
@@ -51,16 +45,14 @@ function App() {
           <PlayGameWrapper/>
         </Route>
         <Route path="/">
-          {logInStatus ? <GamesOverviewForUser /> :
-          <WelcomePage />
-          }
+          { HomePageWrapper(logInStatus) }
         </Route>
       </Switch>
     </div>
   );
 };
 
-function PlayGameWrapper() {
+const PlayGameWrapper = () => {
   const history = useHistory();
 
   const {gameId, round} = useParams();
@@ -72,5 +64,11 @@ function PlayGameWrapper() {
 
   return <PlayGamePage gameId={gameId} round={round as unknown as number}/>
 };
+
+const HomePageWrapper = (userLoggedIn: boolean) => {
+  if (userLoggedIn) return <GamesOverviewForUser/>
+
+  return <WelcomePage/>
+}
 
 export default App;

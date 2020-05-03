@@ -12,7 +12,5 @@ export default function CreateGame(nickname: string) {
                 userId: session.getIdToken().payload["cognito:username"],
                 nickname: nickname
         })))
-        .then(response => response.text())
-        .then(text => JSON.parse(text))
-        .then(json => json as unknown as CreateGameResponse)
+        .then(json => json as CreateGameResponse)
 }

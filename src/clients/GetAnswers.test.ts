@@ -8,11 +8,12 @@ describe('GetAnswers', () => {
     const basicBackendCallSpy = jest.spyOn(BasicBackendCall, 'call');
 
     beforeEach(() => {
-        const mockFetchPromise = Promise.resolve(new Response(JSON.stringify({answers: [{
+        const mockFetchPromise = Promise.resolve({answers: [{
             questionNumber: 1,
             answer: "horse",
-            userId: "fred"
-        }]})));
+            userId: "fred",
+            nickname: "willy"
+        }]});
     
         basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody?: string) => mockFetchPromise);
     })
@@ -26,9 +27,10 @@ describe('GetAnswers', () => {
     it('returns the correct return val', async() => {
         const response = await GetAnswers(sampleGameId, sampleRound);
 
-        expect("answers" in response).toBeTruthy;
+        expect(response.answers.length).toBe(1);
         expect(response.answers[0].questionNumber).toBe(1);
         expect(response.answers[0].userId).toBe("fred");
         expect(response.answers[0].answer).toBe("horse");
+        expect(response.answers[0].nickname).toBe("willy");
     });
 });

@@ -1,84 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import GetGame from './../../clients/GetGame';
+import GetGame, { GameStates } from './../../clients/GetGame';
 import {GetGameResponse} from './../../clients/GetGame';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import Loading from './../Loading';
 import ViewRoundResults from './ViewRoundResults';
+import { BasicGameInfo } from '../../clients/GetGamesForUser';
+import { ScoreView } from './ScoreView';
+import { UsersInGameView } from './UsersInGameView';
 
 interface Props {
-    gameId: string
+    game: BasicGameInfo
 }
 
 export default (props: Props) => {
-    const [ gameData, setGameData ] = useState<GetGameResponse>();
+    const linkToPlayGame = '/play/' + props.game.gameId + '/' + props.game.round;
 
-    useEffect(() => {
-        if (gameData != null) return;
-        
-        console.log('This is waht props looks like' + JSON.stringify(props));
-        GetGame(props.gameId)
-            .then(response => {
-                // console.log(JSON.stringify(response));
-                setGameData(response)
-            })
-            .catch(err => console.log("Could not get game " + err));
-    });
-
-    const playerRows = () => {
-        let player_list: any = []
-        if (gameData) {
-            gameData.players.forEach(player => {
-                player_list.push(<tr>
-                    <td>{player.nickname}</td>
-                    <td>{player.score}</td>
-                </tr>)
-            })
+    const ActionButton = () => {
+        if (props.game.state === GameStates.Waiting) {
+            return (
+                <div>Waiting for other players!</div>
+            )
         }
-        return player_list;
+
+        return ( 
+            <Link className="btn btn-primary" to={linkToPlayGame}>
+                <span>Play Game</span>
+            </Link>
+        );
     }
 
-    // todo: get the real round here
-    const linkToPlayGame = "/play/" + gameData?.gameId + "/1";
-
     return (
-        <div className="container border border-light rounded mb-5">
+        <div className="container border border-light rounded mb-5 pt-3">
             <div className="row">
                 <div className="col-4">
-                { !gameData ? <Loading /> : null }
-                    GameId: {gameData?.gameId}
+                    GameId: {props.game.gameId}
                 </div>
                 <div className="col-4">
-                    Host: {gameData?.host.nickname}
+                    Round: { props.game.round }
                 </div>
                 <div className="col-4">
                     <div className="row">
-                        <Link className="nav-link" to={linkToPlayGame}>
-                            <Button className="btn btn-primary">
-                                <span>Play Game</span>
-                            </Button>
-                        </Link>
+                        <ActionButton/>
                     </div>
-                    <div className="row">
-                        {
-                            gameData ? <ViewRoundResults gameId={gameData?.gameId} round={1} /> : null
-                        }
+                    <div className="row pt-3">
+                        <ViewRoundResults gameId={props.game.gameId} round={props.game.round - 1} />
                     </div>
                 </div>
             </div>
-            <div className="row w-50">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nickname</th>
-                            <th scope="col">Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {playerRows()}
-                    </tbody>
-                </table>
-            </div>
+
+            {
+                props.game.scores.scores.length === 0 ?
+                    <UsersInGameView game={props.game}/> :
+                    <ScoreView score={props.game.scores}/>
+            }
         </div>
     );
 }

@@ -12,12 +12,7 @@ export interface GetQuestionsResponse {
     letter: string
 };
 
-export function GetQuestions(gameId: string, round: number): Promise<GetQuestionsResponse> {
+export async function GetQuestions(gameId: string, round: number): Promise<GetQuestionsResponse> {
     return BasicBackendCall.call("GET", "QUESTIONS/" + gameId + "/" + round)
-        .then(response => response.json())
-        .then(json => {
-            // console.log(JSON.stringify(json));
-            return json;
-        })
-        .then(json => json as unknown as GetQuestionsResponse);
+        .then(json => json as GetQuestionsResponse);
 };

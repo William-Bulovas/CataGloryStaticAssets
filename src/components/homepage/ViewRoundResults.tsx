@@ -9,26 +9,33 @@ interface Props {
     round: number
 }
 
+interface UserNicknameTuple {
+    userId: string,
+    nickname: string
+}
+
 export default (props: Props) => {
     const[questionData, setQuestionData] = useState<GetQuestionsResponse>();
     const[answerData, setAnswerData] = useState<GetAnswersResponse>();
     const[showModal, setShowModal] = useState(false);
 
+    if (props.round === 0) {
+        return null;
+    }
+
     useEffect(() => {
-        if (answerData != null) return;
+        if (answerData) return;
 
         GetAnswers(props.gameId, props.round)
             .then(response =>{
-                // console.log(JSON.stringify(response));
                 setAnswerData(response);
             })
             .catch(err => console.log("Could not get Answers " + err));
         
-        if (questionData != null) return;
+        if (questionData) return;
 
         GetQuestions(props.gameId, props.round)
             .then(response =>{
-                // console.log(JSON.stringify(response));
                 setQuestionData(response);
             })
             .catch(err => console.log("Could not get Questions " + err));
@@ -38,24 +45,27 @@ export default (props: Props) => {
     const handleShow = () => setShowModal(true);
 
     const getTableBody = () => {
-        let userList: [] = []
-        if (questionData == null || answerData == null) return;
+        let userList: UserNicknameTuple[] = []
+        if (!questionData || !answerData) return;
 
         let groupedResultsByUser: {[k: string]: any} = {};
 
         // create mapping of {user... -> {questionNum : answer}... 
         let questionNumVar: number;
-        answerData!.answers.forEach(resp => {
-            let userId = resp['userId'];
+        answerData.answers.forEach(answer => {
+            let userId = answer.userId;
             if (!(userId in groupedResultsByUser)) {
                 groupedResultsByUser[userId] = {}
-                userList.push(userId);
-                questionNumVar = resp['questionNumber'];
-                groupedResultsByUser[userId][questionNumVar] = resp['answer'];
+                userList.push({
+                    userId: userId,
+                    nickname: answer.nickname
+                });
+                questionNumVar = answer.questionNumber;
+                groupedResultsByUser[userId][questionNumVar] = answer.answer;
             }
             else {
-                questionNumVar = resp['questionNumber'];
-                groupedResultsByUser[userId][questionNumVar] = resp['answer'];
+                questionNumVar = answer.questionNumber;
+                groupedResultsByUser[userId][questionNumVar] = answer.answer;
             }
         });
         
@@ -63,8 +73,8 @@ export default (props: Props) => {
         let userRowsInTable: any = []
         userList.forEach(user => {
             let userAnswerCells: any = []
-            userAnswerCells.push(<th scope="row">{user}</th>)
-            let userMap : any = groupedResultsByUser[user]
+            userAnswerCells.push(<th scope="row">{user.nickname}</th>)
+            let userMap : any = groupedResultsByUser[user.userId]
             questionData.categories.forEach(category => {
                 let answer = "";
                 if (category.QuestionNumber in userMap){
@@ -98,7 +108,7 @@ export default (props: Props) => {
     }
 
     const getTableHeaders = () => {
-        if (questionData == null) return;
+        if (!questionData) return;
         
         let headerList: any = []
         headerList.push(<th>Users</th>)
@@ -112,7 +122,7 @@ export default (props: Props) => {
     return (
         <div>
             <button className="btn btn-primary" onClick={() => handleShow()}>
-                View Round Results
+                View Round {props.round} Results
             </button>
             <Modal size="xl" aria-labelledby="example-modal-sizes-title-xl" show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>

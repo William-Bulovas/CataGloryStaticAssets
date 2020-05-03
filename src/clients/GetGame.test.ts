@@ -8,11 +8,11 @@ describe('GetGame', () => {
     const basicBackendCallSpy = jest.spyOn(BasicBackendCall, 'call');
 
     beforeEach(() => {
-        const mockFetchPromise = Promise.resolve(new Response(JSON.stringify({
+        const mockFetchPromise = Promise.resolve({
             gameId: sampleGameId,
             host: host,
             players: players
-        })));
+        });
     
         basicBackendCallSpy.mockImplementation((requestType: string, resource: string, requestBody?: string) => mockFetchPromise);
     })

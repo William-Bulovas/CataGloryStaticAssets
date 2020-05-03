@@ -13,10 +13,5 @@ export default function JoinGame(gameId: string, nickname: string): Promise<Join
             gameId: gameId,
             nickname: nickname
         })))
-        .then(response => response.json())
-        .then(response => {
-            console.log(JSON.stringify)
-            return response;
-        })
-        .then(json => json as unknown as JoinGameResponse);
+        .then(json => json as JoinGameResponse);
 }

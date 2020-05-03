@@ -1,16 +1,30 @@
 import { Auth } from "aws-amplify";
 import BasicBackendCall from './BasicBackEndCall';
+import { GameStates } from "./GetGame";
+
+export interface Score {
+    userId: string,
+    nickname: string,
+    score: number
+}
+
+export interface GameScore {
+    scores: Score[]
+}
 
 export interface BasicGameInfo {
     userId: string,
-    gameId: string
+    gameId: string,
+    round: number,
+    state: string,
+    scores: GameScore
 }
 
 export interface GetGamesResponse {
     games: BasicGameInfo[]
 }
 
-export default function GetGames(state?: string): Promise<GetGamesResponse> {
+export default function GetGames(state?: GameStates): Promise<GetGamesResponse> {
     return Auth.currentSession()
     .then(session => {
         const userId = session.getIdToken().payload["cognito:username"];
@@ -19,14 +33,5 @@ export default function GetGames(state?: string): Promise<GetGamesResponse> {
 
         return BasicBackendCall.call('GET', resourcePath);
     })
-    .then(response => response.text())
-    .then(text => {
-        console.log(text);
-        return JSON.parse(text);
-    })
-    .then(json => {
-        console.log(JSON.stringify(json));
-        return json;
-    })
-    .then(json => json as unknown as GetGamesResponse);
+    .then(json => json as GetGamesResponse);
 }
