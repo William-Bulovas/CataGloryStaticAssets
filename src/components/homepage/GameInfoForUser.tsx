@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import GetGame, { GameStates } from './../../clients/GetGame';
-import {GetGameResponse} from './../../clients/GetGame';
+import { GameStates } from './../../clients/GetGame';
 import { Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
-import Loading from './../Loading';
-import ViewRoundResults from './ViewRoundResults';
 import { BasicGameInfo } from '../../clients/GetGamesForUser';
 import { ScoreView } from './ScoreView';
 import { UsersInGameView } from './UsersInGameView';
+import ViewRoundButton from './ViewRound/ViewRoundButton';
 
 interface Props {
     game: BasicGameInfo
@@ -44,7 +41,7 @@ export default (props: Props) => {
                         <ActionButton/>
                     </div>
                     <div className="row pt-3">
-                        <ViewRoundResults gameId={props.game.gameId} round={props.game.round - 1} />
+                        <ViewRoundButton gameId={props.game.gameId} round={props.game.round - 1} score={props.game.scores} />
                     </div>
                 </div>
             </div>

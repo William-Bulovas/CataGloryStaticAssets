@@ -8,7 +8,8 @@ export interface UserAnswer {
     questionNumber: number,
     userId: string,
     answer: string,
-    nickname: string
+    nickname: string,
+    strikes: string[]
 }
 
 export default function GetAnswers(gameId: string, round: number): Promise<GetAnswersResponse> {
