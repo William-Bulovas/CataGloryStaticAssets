@@ -14,6 +14,10 @@ export default (props: Props) => {
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
 
+    if (props.round === 0) {
+        return (<div/>);
+    }
+
     return (<div>
         <button className="btn btn-primary" onClick={() => handleShow()}>
             View Round {props.round} Results

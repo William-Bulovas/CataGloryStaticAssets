@@ -17,7 +17,8 @@ export interface BasicGameInfo {
     gameId: string,
     round: number,
     state: string,
-    scores: GameScore
+    scores: GameScore,
+    isHost: boolean
 }
 
 export interface GetGamesResponse {
