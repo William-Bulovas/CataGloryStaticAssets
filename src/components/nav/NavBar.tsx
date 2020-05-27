@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import CreateGameButton from './CreateGameButton';
 
 interface Props {
-    loginState: boolean
+    loginState: boolean,
+    refreshCreated: () => void
 };
 
 export default function NavBar(props: Props) {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light mb-3">
             <a className="navbar-brand" href="/">CataGlory</a>
         
             <div className="navbar-nav ml-auto">
@@ -18,7 +19,7 @@ export default function NavBar(props: Props) {
                 </Link>
 
                 { !props.loginState && <FacebookSignInButton largeBtn={false}/> }
-                { props.loginState && <CreateGameButton/> }
+                { props.loginState && <CreateGameButton refresh={props.refreshCreated}/> }
             </div>
         </nav>
     );

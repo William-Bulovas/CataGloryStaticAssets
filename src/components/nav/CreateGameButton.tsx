@@ -6,7 +6,11 @@ import CreateGameSuccessDialog from './CreateGameComponents/CreateGameSuccessDia
 import NicknameForm from '../NicknameForm';
 import { APIConfig } from '../../EnvConfig';
 
-export default function CreateGameButton() {
+interface Props {
+    refresh: () => void
+}
+
+export default function CreateGameButton(props: Props) {
     const [showDialog, setShowDialog] = useState(false);
     const [createdGameId, setGameId] = useState("");
     const [loading, setLoading] = useState(false);
@@ -21,6 +25,7 @@ export default function CreateGameButton() {
             .then(() => setGameCreated(true))
             .then(() => setShowDialog(true))
             .then(() => setLoading(false))
+            .then(() => props.refresh())
             .catch(err => console.log("Could not create the game :" + err));
     }
 

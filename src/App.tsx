@@ -8,11 +8,15 @@ import JoinGameComponent from './components/joinGame/JoinGameComponent';
 import PlayGamePage from './components/playGame/PlayGamePage';
 import WelcomePage from './components/homepage/WelcomePage';
 import GamesOverviewForUser from './components/homepage/GamesOverviewForUser';
+import Loading from './components/Loading';
 
 
 function App() {
   const [logInStatus, setLogInStatus] = useState(false);
-  const [isLoading, setLoading] = useState(false)
+  const [isLoading, setLoading] = useState(true);
+  const [createRefresh, setCreateRefresh] = useState(0);
+
+  const RefreshContext = React.createContext(false);
 
   useEffect(() => {
     Hub.listen('auth', ({ payload: {event, data}}) => {
@@ -27,27 +31,33 @@ function App() {
 
     Auth.currentSession()
       .then(() => setLogInStatus(true))
-      .catch(() => setLogInStatus(false));
-    
+      .catch(() => setLogInStatus(false))
+      .then(() => setLoading(false));   
   });
+
+  const HomePageWrapper = () => {
+    if (logInStatus) return <GamesOverviewForUser createRefresh={createRefresh}/>
+  
+    return <WelcomePage/>
+  }  
 
   return (
     <div className="App mb-5">
-      <NavBar loginState={logInStatus} />
-      <Switch>
-        <Route path="/privacy" >
-          <FacebookPolicyPage loginState={logInStatus} />
-        </Route>
-        <Route path="/join">
-          <JoinGameComponent/>
-        </Route>
-        <Route path="/play/:gameId/:round">
-          <PlayGameWrapper/>
-        </Route>
-        <Route path="/">
-          { HomePageWrapper(logInStatus) }
-        </Route>
-      </Switch>
+      { isLoading ? <Loading/> : 
+        <Switch>
+          <Route path="/privacy" >
+            <FacebookPolicyPage loginState={logInStatus} />
+          </Route>
+          <Route path="/join">
+            <JoinGameComponent/>
+          </Route>
+          <Route path="/play/:gameId/:round">
+            <PlayGameWrapper/>
+          </Route>
+          <Route path="/">
+            <HomePageWrapper/>
+          </Route>
+        </Switch>}
     </div>
   );
 };
@@ -65,10 +75,5 @@ const PlayGameWrapper = () => {
   return <PlayGamePage gameId={gameId} round={round as unknown as number}/>
 };
 
-const HomePageWrapper = (userLoggedIn: boolean) => {
-  if (userLoggedIn) return <GamesOverviewForUser/>
-
-  return <WelcomePage/>
-}
 
 export default App;

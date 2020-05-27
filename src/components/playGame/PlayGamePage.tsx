@@ -4,10 +4,8 @@ import { SubmitAnswer } from '../../clients/SubmitAnswer';
 import Loading from '../Loading';
 import CheckIcon from '@material-ui/icons/Check';
 import SubmissionPage from './SubmissionPage';
-import EndRound from '../../clients/EndRound';
-import { Modal } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
 import EndRoundDialog from './EndRoundDialog';
+import NavBar from '../nav/NavBar';
 
 interface Props {
     gameId: string,
@@ -75,38 +73,41 @@ export default (props: Props) => {
     const selectedCategory = questions.categories.filter(category => category.QuestionNumber == currentQuestion)[0];
 
     return (
-        <div className="container-lg">
-            <div className="row">
-                <div className="col-4"/>
-                <div className="col-4">
-                    <h3>Play Round {props.round}</h3>
-                    <h4>Letter is {questions.letter}</h4> 
+        <div>
+            <NavBar loginState={true} refreshCreated={() => {}} />
+            <div className="container-lg">
+                <div className="row">
+                    <div className="col-4"/>
+                    <div className="col-4">
+                        <h3>Play Round {props.round}</h3>
+                        <h4>Letter is {questions.letter}</h4> 
+                    </div>
+                    <div className ="col-4">
+                        <button className="btn btn-primary" onClick={() => setShowEndRoundDialog(true)}>Submit Round!</button>
+                    </div>
                 </div>
-                <div className ="col-4">
-                    <button className="btn btn-primary" onClick={() => setShowEndRoundDialog(true)}>Submit Round!</button>
+                <div className="row pt-5">
+                    <div className="col-sm-2">
+                        <ul className="list-group">
+                            { questions.categories.map(question => {
+                                return (
+                                    <li className={ questionClassForNumber(question.QuestionNumber) } onClick={() => clickQuestion(question.QuestionNumber)} key={ question.QuestionNumber }>
+                                        Question { question.QuestionNumber + 1 }
+
+                                        { getQuestionStatus(question.QuestionNumber) }
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+
+                    <SubmissionPage letter={ questions.letter } category={ selectedCategory.Category } submissionFunction={ submitAnswer }/>
                 </div>
+
+                <EndRoundDialog gameId={props.gameId} 
+                    show={showEndRoundDialog} 
+                    onCancel={() => setShowEndRoundDialog(false)}/>
             </div>
-            <div className="row pt-5">
-                <div className="col-sm-2">
-                    <ul className="list-group">
-                        { questions.categories.map(question => {
-                            return (
-                                <li className={ questionClassForNumber(question.QuestionNumber) } onClick={() => clickQuestion(question.QuestionNumber)} key={ question.QuestionNumber }>
-                                    Question { question.QuestionNumber + 1 }
-
-                                    { getQuestionStatus(question.QuestionNumber) }
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
-
-                <SubmissionPage letter={ questions.letter } category={ selectedCategory.Category } submissionFunction={ submitAnswer }/>
-            </div>
-
-            <EndRoundDialog gameId={props.gameId} 
-                show={showEndRoundDialog} 
-                onCancel={() => setShowEndRoundDialog(false)}/>
         </div>
     );
 };

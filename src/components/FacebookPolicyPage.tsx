@@ -1,5 +1,6 @@
 import React from 'react';
 import { Auth } from 'aws-amplify';
+import NavBar from './nav/NavBar';
 
 interface Props {
     loginState: boolean
@@ -12,6 +13,7 @@ export default function FacebookPolicyPage(props: Props) {
 
     return (
         <div>
+            <NavBar loginState={props.loginState} refreshCreated={() => {}} />
             <h2>
                 Our Privacy Policy
             </h2>

@@ -43,3 +43,18 @@
   color: white;
   background-color: #4267B2;
 }
+
+.games-enter {
+  opacity: 0;
+}
+.games-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.games-exit {
+  opacity: 1;
+}
+.games-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}

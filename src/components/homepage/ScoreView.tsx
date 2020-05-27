@@ -16,7 +16,8 @@ export const ScoreView = (props: Props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {props.score.scores.map(score => <tr>
+                    {props.score.scores.map(score => 
+                    <tr key={score.userId}>
                         <td>{score.nickname}</td>
                         <td>{score.score}</td>
                     </tr>)}
