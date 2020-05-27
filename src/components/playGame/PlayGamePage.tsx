@@ -6,6 +6,8 @@ import CheckIcon from '@material-ui/icons/Check';
 import SubmissionPage from './SubmissionPage';
 import EndRoundDialog from './EndRoundDialog';
 import NavBar from '../nav/NavBar';
+import PlayGameTimer from './PlayGameTimer';
+import EndRound from '../../clients/EndRound';
 
 interface Props {
     gameId: string,
@@ -77,7 +79,9 @@ export default (props: Props) => {
             <NavBar loginState={true} refreshCreated={() => {}} />
             <div className="container-lg">
                 <div className="row">
-                    <div className="col-4"/>
+                    <div className="col-4">
+                        <PlayGameTimer onClose={() => EndRound(props.gameId)}/>
+                    </div>
                     <div className="col-4">
                         <h3>Play Round {props.round}</h3>
                         <h4>Letter is {questions.letter}</h4> 
